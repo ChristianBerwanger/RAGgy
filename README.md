@@ -39,6 +39,17 @@ ChromaDB is used as a long-term memory. Chroma is used, because it can run local
 * **Similarity Search:** When a user asks a question, Chroma performs a semantic similarity search to retrieve only the most relevant document chunks, which are then passed to Gemini.
 * **Persistence:** The database is configured to persist data to the local disk. Therefor the knowledge base remains even after the application restarts.
 
+## Roadmap:
+- [x] MVP implementation
+- [x] Deletion of Chunks
+- [ ] Query Rewriting (Optimize user queries automatically)
+- [ ] mathematical evaluation of output
+- [ ] Show sources for claims
+- [ ] Smarter Chunking (Semantic Chunking / Parent-Child Chunking)
+- [ ] Scalable Deletion of Chunks
+- [ ] Combine Vector Search with Keyword Search
+- [ ] System Prompt Engineering
+
 ## Getting started
 ### Prerequisites
 * Python 3.12 or higher

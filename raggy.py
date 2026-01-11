@@ -23,11 +23,13 @@ if "file_uploader_key" not in st.session_state:
     st.session_state["file_uploader_key"] = 0
 if "processed_files" not in st.session_state:
     st.session_state.processed_files = []
+
 uploaded_file = st.file_uploader(
     "Upload a PDF",
     type="pdf",
     key=f"uploader_{st.session_state['file_uploader_key']}"
 )
+
 if uploaded_file is not None:
     if uploaded_file.name not in st.session_state.processed_files:
 

@@ -43,7 +43,8 @@ ChromaDB is used as a long-term memory. Chroma is used, because it can run local
 - [x] MVP implementation
 - [x] Deletion of Chunks
 - [x] Query Rewriting (Optimize user queries automatically)
-- [ ] mathematical evaluation of output
+- [ ] mathematical evaluation of output (RAGAS)
+- [ ] Fact Checking
 - [ ] Show sources for claims
 - [ ] Smarter Chunking (Semantic Chunking / Parent-Child Chunking)
 - [ ] Scalable Deletion of Chunks

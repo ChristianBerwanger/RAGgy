@@ -1,9 +1,9 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnablePassthrough
+from langchain_core.runnables import RunnablePassthrough, RunnableParallel
 from langchain_core.output_parsers import StrOutputParser
 
-from src.config import Config
+from configs.config import Config
 
 def _format_docs(docs):
     """Helper to format retrieved documents into a single string."""
@@ -46,15 +46,29 @@ class RAGgy_Engine:
             ]
         )
         retriever = self.vector_store_manager.get_retriever()
-        self.rag_chain = (
-            {
-                "context": retriever | _format_docs,
-                "input": RunnablePassthrough()
-            }
-            | prompt
-            | self.llm
-            | StrOutputParser()
+        retrieval_step = RunnableParallel({
+            "docs": retriever,
+            "input": RunnablePassthrough()
+        })
+        generation_step = (
+                RunnablePassthrough.assign(
+                    context=lambda x: _format_docs(x["docs"])  # Format docs for the prompt
+                )
+                | prompt
+                | self.llm
+                | StrOutputParser()
         )
+        #self.rag_chain = (
+        #    {
+        #        "context": retriever | _format_docs,
+        #        "input": RunnablePassthrough()
+        #    }
+        #    | prompt
+        #    | self.llm
+        #    | StrOutputParser()
+        #)
+        self.rag_chain_new_pipe = retrieval_step.assign(answer=generation_step)
+
     def _init_query_rewriter_chain(self):
         rewriter_system_prompt = (
             "Rephrase the user query to optimize it for a vector database retrieval system.\n"
@@ -91,7 +105,22 @@ class RAGgy_Engine:
         if not query:
             return "What would you like to know?"
         try:
-            response = self.rag_chain.invoke(self.rewrite_query(query))
+           # response = self.rag_chain.invoke(self.rewrite_query(query))
+           # response_2 = self.rag_chain_new_pipe.invoke(self.rewrite_query(query))['answer']
+            response = self.rag_chain_new_pipe.invoke(query)['answer']
+
+            return response
+        except Exception as e:
+            return f"Error generating response: {e}"
+
+    async def aask(self,query: str):
+        if not query:
+            return "What would you like to know?"
+        try:
+           # response = self.rag_chain.invoke(self.rewrite_query(query))
+           # response_2 = await self.rag_chain_new_pipe.ainvoke(query)
+            response = await self.rag_chain_new_pipe.ainvoke(query)
+
             return response
         except Exception as e:
             return f"Error generating response: {e}"

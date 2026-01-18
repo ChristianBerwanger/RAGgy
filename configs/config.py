@@ -1,16 +1,22 @@
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 
 load_dotenv()
 
 class Config:
     GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-    PDF_DIRECTORY = "data/raw"
-    CHROMA_DB_PATH = "data/chroma_db"
     CHUNK_SIZE = 1000
     CHUNK_OVERLAP = 200
     EMBEDDING_MODEL = "models/text-embedding-004"
     LLM_MODEL = "gemini-3-flash-preview"
+    DATASETGEN_EMBEDDING_MODEL = "models/text-embedding-004"
+    DATASETGEN_LLM_MODEL = "gemini-3-flash-preview"
+    JUDGE_EMBEDDING_MODEL = "models/text-embedding-004"
+    JUDGE_LLM_MODEL = "gemini-3-flash-preview"
+    ROOT_DIR = Path(__file__).resolve().parent.parent
+    PDF_DIRECTORY = ROOT_DIR / "data" / "raw"
+    CHROMA_DB_PATH = ROOT_DIR /"data" / "chroma_db"
 
     @classmethod
     def validate(cls):
